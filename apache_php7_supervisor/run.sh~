@@ -1,0 +1,10 @@
+#!/bin/bash
+for script in /opt/docker-before-run/*
+do
+    echo $scrip
+    if [[ -x $script ]]; then
+        $script
+    fi
+done
+
+exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf --nodaemon

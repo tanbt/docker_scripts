@@ -1,0 +1,2 @@
+1. start new container with your base (FROM: xxx.xxx:xxx), with ports you want to map when it finish:
+e.g: docker run --name my_apache -i -t 80:80 443:443 tan/ubuntu_base:14.04 /bin/bash #
