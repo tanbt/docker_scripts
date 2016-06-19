@@ -3,7 +3,7 @@
 # Build command
 #    docker build -t tanbui/mongodb:3.2 .
 # Create the container:
-#    docker run -i -t --name mongodb3.2 -p 27017:27017 tanbui/mongodb:3.2
+#    docker run --name mongodb -p 27017:27017 tanbui/mongodb:3.2
 
 
 FROM tanbui/ubuntu_base:14.04
@@ -24,7 +24,8 @@ RUN mkdir -p $VOLUME_CONFIG && \
     mkdir -p $VOLUME_LOG/mongodb  && \
     mkdir -p $VOLUME_DATA/mongodb  && \
     touch $VOLUME_DATA/mongodb/mongod.log  && \
-    chmod 775 $VOLUME_LOG -R
+    chmod 775 $VOLUME_LOG -R && \
+    export LC_ALL=C
 
 ADD mongod.conf /data/config/mongod.conf
 
