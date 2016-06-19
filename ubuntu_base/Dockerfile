@@ -19,11 +19,8 @@ RUN apt-get update
 
 RUN apt-get install -y locales language-pack-en-base
 
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LC_CTYPE en_US.UTF-8
-
 # Update APT    
-RUN DEBIAN_FRONTEND=noninteractive  apt-get update -y && \
+RUN locale-gen en_US.UTF-8 && \
+    DEBIAN_FRONTEND=noninteractive  apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive  apt-get upgrade -y && \
     DEBIAN_FRONTEND=noninteractive  apt-get -y install software-properties-common python-software-properties vim wget curl
