@@ -1,15 +1,13 @@
 # Tan Bui Docker Base Image, based on Ubuntu 18.04
-# - docker build --build-arg TIMEZONE=Europe/Helsinki -t tanbui/ubuntu_base:18.04 .
+# - docker build -t tanbui/ubuntu_base:18.04 .
 #
 # NOTE: change parameters' values to your own ones
 # Create the container:
-# - docker run -it --name tanub18 tanbui/ubuntu_base:18.04 /bin/bash
+# - docker run -it -e TZ=Europe/Helsinki --name tanub18 tanbui/ubuntu_base:18.04 /bin/bash
 #
 
 FROM ubuntu:18.04
-MAINTAINER TAN BUI trungtanbui@gmail.com
-
-ARG TIMEZONE
+LABEL maintainer="trungtanbui@gmail.com"
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -23,6 +21,6 @@ RUN DEBIAN_FRONTEND=noninteractive  apt -y install software-properties-common vi
     DEBIAN_FRONTEND=noninteractive  apt -y install locales language-pack-en-base tzdata
 
 # fix user environment
-RUN ln -snf /usr/share/zoneinfo/$TIMEZONE /etc/localtime && echo $TIMEZONE > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN locale-gen en_US.UTF-8
