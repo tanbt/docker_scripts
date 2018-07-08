@@ -1,34 +1,32 @@
-# Tan Bui personal image, this image based on Ubuntu 14.04
+# Tan Bui Apache PHP7 with Supervisor, based on Ubuntu 18.04
 # This image will be tagged with the name:
-#    docker build -t tanbui/apache_php7_supervisor:2.4.x .
-# Note: change php timezone to your own
+#    docker build -t tanbui/apache:2.4 .
 #
 # Create the container:
-#    docker run -v /home/tanub/etc/apache2/sites-available:/data/config/apache2/sites-available:rw -v /home/tanub/www/iconic_intl:/data/www/iconic_intl:rw --name apache2.4 -p 80:80 -p 443:443 tanbui/apache_php7_supervisor:2.4.x
+#    docker run -v E:\www:/data/www:rw -v E:\www\apache\sites-available:/data/config/apache/sites-available --name apache2.4 -p 80:80 -e "TZ=Europe/Helsinki" tanbui/apache:2.4
 #
+# Check system time: `# date`
+# Check php time:     `# php -r 'echo date("d/M/yy h:m:s");'`
 
-FROM tanbui/ubuntu_base:14.04
+FROM tanbui/ubuntu_base:18.04
 
-MAINTAINER TAN BUI trungtanbui@gmail.com
+LABEL maintainer="trungtanbui@gmail.com"
 
 ENV VOLUME_DATA /data
 ENV VOLUME_CONFIG /data/config
-ENV VOLUME_LOG /data/log
 
 # Update APT and install supervisord
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install supervisor && \
     DEBIAN_FRONTEND=noninteractive apt-get -y clean
 
 # Install apache 2.4
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 mysql-client telnet && \
-    a2enmod rewrite && \
-    a2enmod vhost_alias
+RUN DEBIAN_FRONTEND=noninteractive apt -y install apache2 mariadb-server mariadb-client && \
+    a2enmod rewrite && a2enmod vhost_alias &&  echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-RUN mkdir -p $VOLUME_CONFIG && \ 
-    mkdir -p $VOLUME_DATA && \
-    mkdir -p $VOLUME_LOG  && \
-    mkdir -p $VOLUME_LOG/apache2  && \
-    chmod 775 $VOLUME_LOG -R  && \
+# Orgazine root data folder
+RUN mkdir -p $VOLUME_DATA && \
+    mkdir -p $VOLUME_CONFIG && \
+    chmod 775 $VOLUME_DATA -R && \
 
     mv /etc/apache2 /etc/apache2_origin && \
     ln -s /etc/apache2_origin $VOLUME_CONFIG/apache2 && \
@@ -36,13 +34,8 @@ RUN mkdir -p $VOLUME_CONFIG && \
 
     mv /var/www /var/www_origin && \
     ln -s /var/www_origin $VOLUME_DATA/www && \
-    ln -s $VOLUME_DATA/www /var/www && \
-    chown www-data:www-data -h /var/www && \
+    ln -s $VOLUME_DATA/www /var/www
 
-    rm /var/log/apache2 -rf && \
-    ln -s $VOLUME_LOG/apache2 /var/log/apache2 && \
-    chown www-data:www-data -h /var/log/apache2
-    
 # Add apache into supervisord config
 RUN echo "\
 [program:apache2]\n\
@@ -52,12 +45,17 @@ autostart=true\n\
 autorestart=true\
 " >> /etc/supervisor/conf.d/apache2.conf
 
-# Update php5 to php7
-RUN apt-get purge php5-common -y && apt-get autoremove -y
-
 RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:ondrej/php -y && apt-get update -y
+RUN apt install -y php7.2 libapache2-mod-php7.2
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php-memcached php7.0 php7.0-common libapache2-mod-php7.0 php7.0-fpm php7.0-curl php7.0-intl php7.0-mcrypt php7.0-xmlrpc php7.0-json php7.0-sqlite3 php7.0-mysql php7.0-opcache php7.0-mbstring php7.0-soap php7.0-xml php7.0-zip && sed "s/^;date.timezone.*$/date.timezone=Asia\/Ho_Chi_Minh /g" -i /etc/php/7.0/apache2/php.ini
+RUN DEBIAN_FRONTEND=noninteractive apt install -y php-memcached php7.2-common && \
+    DEBIAN_FRONTEND=noninteractive apt install -y php7.2-fpm php7.2-curl php7.2-intl php7.1-mcrypt php7.2-xmlrpc && \
+    DEBIAN_FRONTEND=noninteractive apt install -y php7.2-json php7.2-sqlite3 php7.2-mysql php7.2-opcache && \
+    DEBIAN_FRONTEND=noninteractive apt install -y php-memcached php7.2-common
+
+# sed "s/^;date.timezone.*$/date.timezone=$TZ /g" -i /etc/php/7.2/apache2/php.ini && \
+RUN sed "s/^upload_max_filesize.*$/upload_max_filesize=128M /g" -i /etc/php/7.2/apache2/php.ini && \
+    sed "s/^default_socket_timeout.*$/default_socket_timeout=180 /g" -i /etc/php/7.2/apache2/php.ini
 
 ADD run.sh /run.sh
 RUN chmod +x /run.sh
