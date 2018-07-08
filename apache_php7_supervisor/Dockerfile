@@ -1,9 +1,9 @@
 # Tan Bui Apache PHP7 with Supervisor, based on Ubuntu 18.04
 # This image will be tagged with the name:
-#    docker build -t tanbui/apache:2.4 .
+#    docker build -t tanbui/apache_php7_supervisor:2.4 .
 #
 # Create the container:
-#    docker run -v E:\www:/data/www:rw -v E:\www\apache\sites-available:/data/config/apache/sites-available --name apache2.4 -p 80:80 -e "TZ=Europe/Helsinki" tanbui/apache:2.4
+#    docker run -v E:\www:/data/www:rw -v E:\www\apache\sites-enabled:/etc/apache2/sites-enabled:rw --name webserver -p 80:80 -e "TZ=Europe/Helsinki" tanbui/apache_php7_supervisor:2.4
 #
 # Check system time: `# date`
 # Check php time:     `# php -r 'echo date("d/M/yy h:m:s");'`
@@ -45,6 +45,15 @@ autostart=true\n\
 autorestart=true\
 " >> /etc/supervisor/conf.d/apache2.conf
 
+# Add mysql into supervisord config
+RUN echo "\
+[program:mysqld]\n\
+command=mysqld_safe\n\
+numprocs=1\n\
+autostart=true\n\
+autorestart=true\
+" >> /etc/supervisor/conf.d/mysqld.conf
+
 RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:ondrej/php -y && apt-get update -y
 RUN apt install -y php7.2 libapache2-mod-php7.2
 
@@ -57,7 +66,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y php-memcached php7.2-common &&
 RUN sed "s/^upload_max_filesize.*$/upload_max_filesize=128M /g" -i /etc/php/7.2/apache2/php.ini && \
     sed "s/^default_socket_timeout.*$/default_socket_timeout=180 /g" -i /etc/php/7.2/apache2/php.ini
 
-ADD run.sh /run.sh
+COPY 000-default-tanbui.conf /etc/apache2/sites-enabled/000-default-tanbui.conf
+COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
 EXPOSE 80

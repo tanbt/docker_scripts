@@ -18,7 +18,7 @@ RUN DEBIAN_FRONTEND=noninteractive  apt update -y && \
     DEBIAN_FRONTEND=noninteractive  apt upgrade -y
 
 RUN DEBIAN_FRONTEND=noninteractive  apt -y install software-properties-common vim wget curl && \
-    DEBIAN_FRONTEND=noninteractive  apt -y install locales language-pack-en-base tzdata
+    DEBIAN_FRONTEND=noninteractive  apt -y install locales language-pack-en-base tzdata htop
 
 # fix user environment
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
