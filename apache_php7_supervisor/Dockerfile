@@ -3,7 +3,7 @@
 #    docker build -t tanbui/apache_php7_supervisor:2.4 .
 #
 # Create the container:
-#    docker run -v E:\www:/data/www:rw -v E:\www\apache\sites-enabled:/etc/apache2/sites-enabled:rw --name webserver -p 80:80 -e "TZ=Europe/Helsinki" tanbui/apache_php7_supervisor:2.4
+#    docker run -v E:\www:/data/www:rw -v E:\www\apache\sites-enabled:/etc/apache2/sites-enabled:rw --name webserver -p 80:80 -p 3306:3306 -e "TZ=Europe/Helsinki" tanbui/apache_php7_supervisor:2.4
 #
 # Check system time: `# date`
 # Check php time:     `# php -r 'echo date("d/M/yy h:m:s");'`
@@ -72,5 +72,6 @@ RUN chmod +x /run.sh
 
 EXPOSE 80
 EXPOSE 443
+EXPOSE 3306
 
 CMD ["/run.sh"]
