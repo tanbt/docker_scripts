@@ -60,7 +60,7 @@ RUN apt install -y php7.2 libapache2-mod-php7.2
 RUN DEBIAN_FRONTEND=noninteractive apt install -y php-memcached php7.2-common && \
     DEBIAN_FRONTEND=noninteractive apt install -y php7.2-fpm php7.2-curl php7.2-intl php7.1-mcrypt php7.2-xmlrpc && \
     DEBIAN_FRONTEND=noninteractive apt install -y php7.2-json php7.2-sqlite3 php7.2-mysql php7.2-opcache && \
-    DEBIAN_FRONTEND=noninteractive apt install -y php-memcached php7.2-common
+    DEBIAN_FRONTEND=noninteractive apt install -y php-memcached php7.2-common php7.2-dom php7.2-xml php7.2-gd
 
 # sed "s/^;date.timezone.*$/date.timezone=$TZ /g" -i /etc/php/7.2/apache2/php.ini && \
 RUN sed "s/^upload_max_filesize.*$/upload_max_filesize=128M /g" -i /etc/php/7.2/apache2/php.ini && \
