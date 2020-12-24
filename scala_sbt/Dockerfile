@@ -1,7 +1,7 @@
 # Alpine 3.9.4, openjdk version "1.8.0_212"
-# Build the image: `docker build -t tanbui/scala_sbt:1.0.0 .`
+# Build the image: `docker build -t tanbui/scala-sbt:1.0.0 .`
 # Test the container:
-#   `docker run --name sb -it tanbui/scala_sbt:1.0.0 /bin/bash`
+#   `docker run --name sb -it tanbui/scala-sbt:1.0.0 /bin/bash`
 #   # sbt -version
 
 FROM openjdk:8u212-jre-alpine as base

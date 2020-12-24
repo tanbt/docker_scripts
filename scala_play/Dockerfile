@@ -1,9 +1,9 @@
-# Build: `docker build -t tanbui/scala_play:1.0.0 .`
-# Run: `docker run --name sp -d -p 9000:9000 tanbui/scala_play:1.0.0`
+# Build: `docker build -t tanbui/scala-play:1.0.0 .`
+# Run: `docker run --name sp -d -p 9000:9000 tanbui/scala-play:1.0.0`
 # Test: http://localhost:9000/v1/hello
 
 # Prepare the env
-FROM tanbui/scala_sbt:1.0.0 as base
+FROM tanbui/scala-sbt:1.0.0 as base
 
 # Copy source to /source directory
 RUN mkdir /source
