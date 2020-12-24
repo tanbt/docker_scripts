@@ -3,7 +3,7 @@
 ## Includes
 
 - [Scala sbt](https://hub.docker.com/r/tanbui/scala-sbt)
-- A simple Play framework 2.8 app for REST APIs
+- A simple Play framework 2.8 app with a REST API
 
 ## Instruction
 
